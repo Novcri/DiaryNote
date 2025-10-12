@@ -6,7 +6,9 @@
     "start": "ts-node src/index.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.15",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "ts-node": "^10.9.2"
   },

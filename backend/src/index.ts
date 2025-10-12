@@ -1,64 +1,90 @@
-
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs';
-import path from 'path';
+import { db } from './connectDb';
+import { ResultSet } from '@libsql/client';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3001;
+const TABLE_DATA = process.env.TABLE_DATA;
 
 app.use(cors());
 app.use(express.json());
 
-const dbPath = path.join(__dirname, '..', 'db.json');
-
-// Helper function to read data from db.json
-const readData = () => {
-  const data = fs.readFileSync(dbPath, 'utf8');
-  return JSON.parse(data);
-};
-
-// Helper function to write data to db.json
-const writeData = (data: any) => {
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-};
-
-// API endpoints
-app.get('/api/posts', (req, res) => {
-  const data = readData();
-  // Sort posts by timestamp in descending order
-  const sortedPosts = data.posts.sort((a: any, b: any) => {
-    // Assuming timestamp is in a format that can be converted to a Date object
-    const dateA = new Date(a.timestamp.replace(/[/]/g, '-')).getTime();
-    const dateB = new Date(b.timestamp.replace(/[/]/g, '-')).getTime();
-    return dateB - dateA;
+const formatResultSet = (resultSet: ResultSet) => {
+  if (!resultSet.rows) {
+    return [];
+  }
+  return resultSet.rows.map(row => {
+    const obj: { [key: string]: any } = {};
+    resultSet.columns.forEach((col, index) => {
+      obj[col] = row[index];
+    });
+    return obj;
   });
-  res.json(sortedPosts);
+};
+
+app.get('/api/posts', async (req, res) => {
+  try {
+    const resultSet = await db.execute(`SELECT * FROM ${TABLE_DATA} ORDER BY timestamp DESC`);
+    const posts = formatResultSet(resultSet);
+    res.json(posts);
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+    res.status(500).json({ message: 'Failed to fetch posts' });
+  }
 });
 
-app.post('/api/posts', (req, res) => {
-  const data = readData();
-  const newPost = {
-    id: Date.now(),
-    ...req.body,
-  };
-  data.posts.push(newPost);
-  writeData(data);
-  res.status(201).json(newPost);
+app.post('/api/posts', async (req, res) => {
+  try {
+    const { text, timestamp } = req.body;
+    if (!text || !timestamp) {
+      return res.status(400).json({ message: 'Missing text or timestamp' });
+    }
+    const newPost = {
+      id: Date.now(),
+      text,
+      timestamp,
+      likes: 0,
+    };
+    await db.execute({
+      sql: `INSERT INTO ${TABLE_DATA} (id, text, timestamp, likes) VALUES (?, ?, ?, ?)`,
+      args: [newPost.id, newPost.text, newPost.timestamp, newPost.likes],
+    });
+    res.status(201).json(newPost);
+  } catch (error) {
+    console.error('Failed to create post:', error);
+    res.status(500).json({ message: 'Failed to create post' });
+  }
 });
 
-app.patch('/api/posts/:id', (req, res) => {
-  const data = readData();
-  const postId = parseInt(req.params.id, 10);
-  const postIndex = data.posts.findIndex((post: any) => post.id === postId);
+app.patch('/api/posts/:id', async (req, res) => {
+  try {
+    const postId = parseInt(req.params.id, 10);
+    const { likes } = req.body;
 
-  if (postIndex !== -1) {
-    // Only update the likes count
-    data.posts[postIndex].likes = req.body.likes;
-    writeData(data);
-    res.json(data.posts[postIndex]);
-  } else {
-    res.status(404).json({ message: 'Post not found' });
+    if (likes === undefined) {
+      return res.status(400).json({ message: 'Missing likes count' });
+    }
+
+    const updateResult = await db.execute({
+      sql: `UPDATE ${TABLE_DATA} SET likes = ? WHERE id = ?`,
+      args: [likes, postId],
+    });
+
+    if (updateResult.rowsAffected === 0) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const resultSet = await db.execute({
+        sql: `SELECT * FROM ${TABLE_DATA} WHERE id = ?`,
+        args: [postId]
+    });
+    const updatedPost = formatResultSet(resultSet)[0];
+
+    res.json(updatedPost);
+  } catch (error) {
+    console.error('Failed to update post:', error);
+    res.status(500).json({ message: 'Failed to update post' });
   }
 });
 
