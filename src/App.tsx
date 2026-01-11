@@ -60,7 +60,7 @@ function App() {
         <button onClick={addPost}>Post</button>
       </div>
       <div className="post-list">
-        {posts.map((post) => (
+        {posts.length ? posts.map((post) => (
           <div key={post.id} className="post-item">
             <div>{post.text}</div>
             <div className="post-footer">
@@ -72,7 +72,7 @@ function App() {
               <div className="timestamp">{post.timestamp}</div>
             </div>
           </div>
-        ))}
+        )) : <div className="post-item">NO DATA</div>}
       </div>
     </div>
   );
