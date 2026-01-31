@@ -5,6 +5,34 @@
   font-family: sans-serif;
 }
 
+nav {
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav li {
+  margin-right: 15px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: #1da1f2;
+}
+
 .post-form {
   display: flex;
   margin-bottom: 20px;
