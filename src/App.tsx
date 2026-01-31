@@ -17,11 +17,11 @@ function App() {
     }
   };
 
-  async function addPost() {
+  const addPost = async () => {
     if (newPost.trim() !== '') {
       try {
         const response = await createPost({
-          text: newPost.trim(),
+          text: newPost,
           timestamp: getFormattedTimestamp(),
           likes: 0,
         });
@@ -62,7 +62,7 @@ function App() {
       <div className="post-list">
         {posts.length ? posts.map((post) => (
           <div key={post.id} className="post-item">
-            <div>{post.text}</div>
+            <div className="post-text">{post.text}</div>
             <div className="post-footer">
               <LikeButton
                 initialLikes={post.likes}
