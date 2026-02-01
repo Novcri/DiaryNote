@@ -25,7 +25,7 @@ const formatResultSet = (resultSet: ResultSet) => {
 
 app.get('/api/posts', async (req, res) => {
   try {
-    const resultSet = await db.execute(`SELECT * FROM ${TABLE_DATA} ORDER BY timestamp DESC`);
+    const resultSet = await db.execute(`SELECT id, text, timestamp, likes, genre FROM ${TABLE_DATA} ORDER BY timestamp DESC`);
     const posts = formatResultSet(resultSet);
     res.json(posts);
   } catch (error) {
@@ -36,7 +36,7 @@ app.get('/api/posts', async (req, res) => {
 
 app.post('/api/posts', async (req, res) => {
   try {
-    const { text, timestamp } = req.body;
+    const { text, timestamp, genre } = req.body;
     if (!text || !timestamp) {
       return res.status(400).json({ message: 'Missing text or timestamp' });
     }
@@ -45,10 +45,11 @@ app.post('/api/posts', async (req, res) => {
       text,
       timestamp,
       likes: 0,
+      genre: genre || '',
     };
     await db.execute({
-      sql: `INSERT INTO ${TABLE_DATA} (id, text, timestamp, likes) VALUES (?, ?, ?, ?)`,
-      args: [newPost.id, newPost.text, newPost.timestamp, newPost.likes],
+      sql: `INSERT INTO ${TABLE_DATA} (id, text, timestamp, likes, genre) VALUES (?, ?, ?, ?, ?)`,
+      args: [newPost.id, newPost.text, newPost.timestamp, newPost.likes, newPost.genre],
     });
     res.status(201).json(newPost);
   } catch (error) {

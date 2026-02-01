@@ -10,6 +10,7 @@ const apiClient = axios.create({
 export interface Post {
   id: number;
   text: string;
+  genre: string;
   timestamp: string;
   likes: number;
 }

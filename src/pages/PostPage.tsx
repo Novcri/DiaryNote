@@ -8,6 +8,7 @@ import '../style.css';
 
 function PostPage() {
   const [newPost, setNewPost] = useState('');
+  const [newGenre, setNewGenre] = useState('');
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
@@ -23,7 +24,13 @@ function PostPage() {
           onChange={(e) => setNewPost(e.target.value)}
           placeholder="What's on your mind?"
         ></textarea>
-        <button onClick={() => addPost(newPost, setNewPost, posts, setPosts)}>Post</button>
+        <input
+          type="text"
+          value={newGenre}
+          onChange={(e) => setNewGenre(e.target.value)}
+          placeholder="Add a genre (e.g., Personal, Work, Idea)"
+        />
+        <button onClick={() => addPost(newPost, newGenre, setNewPost, setNewGenre, posts, setPosts)}>Post</button>
       </div>
       <div className="post-list">
         {posts.length ? posts.map((post) => (
