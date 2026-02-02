@@ -1,50 +1,54 @@
 # DiaryNote
 
-This is a simple diary/note-taking application.
+これはシンプルな日記・ノートアプリケーションです。
 
-## Tech Stack
+## 技術スタック
 
-- **Frontend**: React, TypeScript, Vite, React Router
-- **Backend**: Node.js, Express, ts-node
-- **Database**: libSQL (Turso or local replica)
-- **Styling**: Basic CSS
+- **フロントエンド**: React, TypeScript, Vite, React Router
+- **バックエンド**: Node.js, Express, ts-node
+- **データベース**: libSQL (Turso または ローカルレプリカ)
+- **スタイリング**: 基本的なCSS
 
-## Project Structure
+## プロジェクト構成
 
-- `src/`: Contains the React frontend code.
-  - `App.tsx`: The main application component, which sets up the routing.
-  - `main.tsx`: The entry point of the React application.
-  - `style.css`: Global styles for the application.
-  - `api/`: Functions for making API calls to the backend.
-    - `index.ts`: API functions for posts.
-  - `components/`: Reusable React components.
-    - `LikeButton.tsx`: A button component for liking posts.
-  - `pages/`: Page components for different routes.
-    - `PostPage.tsx`: A page for creating and viewing posts.
-    - `ViewOnlyPage.tsx`: A read-only page for viewing posts.
-  - `utils/`: Utility functions.
-    - `date.ts`: Utility functions for date formatting.
-    - `fetchPosts.ts`: Utility function for fetching posts.
-    - `addPost.ts`: Utility function for adding a new post.
-    - `handleUpdateLikes.ts`: Utility function for updating likes.
-- `backend/`: Contains the Node.js backend code.
-  - `src/index.ts`: The main Express server file, defining API endpoints.
-  - `src/connectDb.ts`: Database connection logic.
-  - `table/schema.sql`: SQL schema for the database table.
-- `package.json`: Defines project scripts and dependencies for the frontend.
-- `backend/package.json`: Defines project scripts and dependencies for the backend.
+- `src/`: Reactフロントエンドのコードが含まれています。
+  - `App.tsx`: ルーティングを設定するメインアプリケーションコンポーネント。
+  - `main.tsx`: Reactアプリケーションのエントリーポイント。
+  - `style.css`: アプリケーションのグローバルスタイル。
+  - `api/`: バックエンドへのAPIコールを行う関数。
+    - `index.ts`: 投稿用のAPI関数。
+  - `components/`: 再利用可能なReactコンポーネント。
+    - `LikeButton.tsx`: 投稿に「いいね！」をするためのボタンコンポーネント。
+  - `pages/`: 各種ルートのページコンポーネント。
+    - `PostPage.tsx`: 投稿の作成と閲覧を行うページ。投稿時に「技術」と「日常」のジャンルを選択できます。
+    - `ViewOnlyPage.tsx`: 投稿を閲覧専用で表示するページ。
+  - `utils/`: ユーティリティ関数。
+    - `date.ts`: 日付フォーマット用のユーティリティ関数。
+    - `fetchPosts.ts`: 投稿を取得するためのユーティリティ関数。
+    - `addPost.ts`: 新しい投稿を追加するためのユーティリティ関数。
+    - `handleUpdateLikes.ts`: 「いいね！」を更新するためのユーティリティ関数。
+- `backend/`: Node.jsバックエンドのコードが含まれています。
+  - `src/index.ts`: APIエンドポイントを定義するメインのExpressサーバーファイル。
+  - `src/connectDb.ts`: データベース接続ロジック。
+  - `table/add_genre_column.sql`: データベーステーブルのスキーマ。
+- `package.json`: フロントエンドのプロジェクトスクリプトと依存関係を定義します。
+- `backend/package.json`: バックエンドのプロジェクトスクリプトと依存関係を定義します。
 
-## How to Run
+## 実行方法
 
-### Frontend
+### フロントエンド
 
-1.  Navigate to the root directory.
-2.  Run `npm install` to install dependencies.
-3.  Run `npm run dev` to start the Vite development server.
+1.  ルートディレクトリに移動します。
+2.  `npm install` を実行して依存関係をインストールします。
+3.  `npm run dev` を実行してVite開発サーバーを起動します。
 
-### Backend
+### バックエンド
 
-1.  Navigate to the `backend` directory.
-2.  Run `npm install` to install dependencies.
-3.  Set up your `.env` file based on the required environment variables (see `backend/src/connectDb.ts`).
-4.  Run `npm start` to start the backend server.
+1.  `backend` ディレクトリに移動します。
+2.  `npm install` を実行して依存関係をインストールします。
+3.  必要な環境変数に基づいて `.env` ファイルをセットアップします（`backend/src/connectDb.ts` を参照）。
+4.  `npm start` を実行してバックエンドサーバーを起動します。
+
+## 注意事項
+
+SQLの確認やフロントエンド・バックエンドのテストは、基本的にこちらから指示があるまで自動で行わないでください。

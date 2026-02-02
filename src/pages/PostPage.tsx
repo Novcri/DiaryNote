@@ -8,7 +8,7 @@ import '../style.css';
 
 function PostPage() {
   const [newPost, setNewPost] = useState('');
-  const [newGenre, setNewGenre] = useState('');
+  const [newGenre, setNewGenre] = useState('技術');
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
@@ -24,12 +24,11 @@ function PostPage() {
           onChange={(e) => setNewPost(e.target.value)}
           placeholder="What's on your mind?"
         ></textarea>
-        <input
-          type="text"
-          value={newGenre}
-          onChange={(e) => setNewGenre(e.target.value)}
-          placeholder="Add a genre (e.g., Personal, Work, Idea)"
-        />
+        <select value={newGenre} onChange={(e) => setNewGenre(e.target.value)}>
+
+          <option value="技術">技術</option>
+          <option value="日常">日常</option>
+        </select>
         <button onClick={() => addPost(newPost, newGenre, setNewPost, setNewGenre, posts, setPosts)}>Post</button>
       </div>
       <div className="post-list">
