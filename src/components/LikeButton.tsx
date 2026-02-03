@@ -39,7 +39,7 @@ const LikeButton = ({ initialLikes, postId, onUpdateLikes }: LikeButtonProps) =>
 
   return (
     <div className="like-container">
-      <button onClick={toggleLike}>{isLiked ? '❤️' : '🤍'}</button>
+      <button className="like-button" onClick={toggleLike}>{isLiked ? '❤️' : '🤍'}</button>
       <span>{likes}</span>
     </div>
   );

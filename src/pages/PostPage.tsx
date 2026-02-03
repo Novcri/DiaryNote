@@ -36,11 +36,16 @@ function PostPage() {
           <div key={post.id} className="post-item">
             <div className="post-text">{post.text}</div>
             <div className="post-footer">
-              <LikeButton
-                initialLikes={post.likes}
-                postId={post.id}
-                onUpdateLikes={(postId, newLikes) => handleUpdateLikes(postId, newLikes, posts, setPosts)}
-              />
+              <div className="like-button-wrapper">
+                <LikeButton
+                  initialLikes={post.likes}
+                  postId={post.id}
+                  onUpdateLikes={(postId, newLikes) => handleUpdateLikes(postId, newLikes, posts, setPosts)}
+                />
+              </div>
+                          <div className={`genre-tag ${post.genre === '技術' ? 'genre-tech' : post.genre === '日常' ? 'genre-daily' : 'genre-other'}`}>
+                            {post.genre}
+                          </div>
               <div className="timestamp">{post.timestamp}</div>
             </div>
           </div>
