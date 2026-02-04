@@ -18,7 +18,7 @@ function App() {
           </ul>
         </nav>
 
-        <hr />
+
 
         <Routes>
           <Route path="/" element={<PostPage />} />

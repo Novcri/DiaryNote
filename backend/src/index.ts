@@ -15,7 +15,7 @@ const formatResultSet = (resultSet: ResultSet) => {
     return [];
   }
   return resultSet.rows.map(row => {
-    const obj: { [key: string]: any } = {};
+    const obj: { [key: string]: unknown } = {};
     resultSet.columns.forEach((col, index) => {
       obj[col] = row[index];
     });

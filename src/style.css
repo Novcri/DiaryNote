@@ -6,10 +6,12 @@
 }
 
 nav {
-  background-color: #f2f2f2;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 10px 20px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 nav ul {
@@ -17,20 +19,26 @@ nav ul {
   margin: 0;
   padding: 0;
   display: flex;
+  gap: 20px;
 }
 
 nav li {
-  margin-right: 15px;
+  /* margin-right removed */
 }
 
 nav a {
   text-decoration: none;
-  color: #333;
-  font-weight: bold;
+  color: #5f6368; /* Google-like gray */
+  font-weight: 500; /* Slightly bolder */
+  padding: 8px 15px;
+  border-radius: 20px; /* More rounded */
+  transition: all 0.3s ease; /* Smooth transition for hover */
+  font-size: 1.1em;
 }
 
 nav a:hover {
-  color: #1da1f2;
+  background-color: #f0f0f0; /* Light gray background on hover */
+  color: #1a73e8; /* Google blue on hover */
 }
 
 .post-form {
@@ -159,4 +167,22 @@ button {
 
 .genre-other {
   background-color: #f0f0f0;
+}
+
+.genre-filter {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.genre-filter button {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  color: black;
+}
+
+.genre-filter button.active {
+  background-color: #1a73e8;
+  color: black;
+  border-color: #1a73e8;
 }

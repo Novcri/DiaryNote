@@ -5,16 +5,39 @@ import '../style.css';
 
 function ViewOnlyPage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedGenre, setSelectedGenre] = useState('All');
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     fetchPosts(setPosts);
   }, []);
 
+  useEffect(() => {
+    if (selectedGenre === 'All') {
+      setFilteredPosts(posts);
+    } else {
+      setFilteredPosts(posts.filter(post => post.genre === selectedGenre));
+    }
+  }, [selectedGenre, posts]);
+
+  const genres = ['All', '技術', '日常'];
+
   return (
     <div className="container">
       <h1>One's Word's (Read-Only)</h1>
+      <div className="genre-filter">
+        {genres.map(genre => (
+          <button
+            key={genre}
+            onClick={() => setSelectedGenre(genre)}
+            className={selectedGenre === genre ? 'active' : ''}
+          >
+            {genre}
+          </button>
+        ))}
+      </div>
       <div className="post-list">
-        {posts.length ? posts.map((post) => (
+        {filteredPosts.length ? filteredPosts.map((post) => (
           <div key={post.id} className="post-item">
             <div className="post-text">{post.text}</div>
                           <div className="post-footer">
