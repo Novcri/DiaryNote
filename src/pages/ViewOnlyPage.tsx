@@ -1,53 +1,73 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { type Post } from '../api';
 import { fetchPosts } from '../utils/fetchPosts';
+import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import '../style.css';
 
 function ViewOnlyPage() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState('All');
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(null); // 'All'ではなくnullで初期化
+  const [selectedDate, setSelectedDate] = useState<string | null>(null); // 選択された日付のステート
+
+  // 投稿をフェッチする関数をuseCallbackでメモ化
+  const getPosts = useCallback(async () => {
+    // selectedGenreがnullまたは'All'の場合は引数にnullを渡す
+    const genreParam = selectedGenre === 'All' ? null : selectedGenre;
+    await fetchPosts(setPosts, selectedDate, genreParam);
+  }, [setPosts, selectedDate, selectedGenre]);
 
   useEffect(() => {
-    fetchPosts(setPosts);
-  }, []);
+    getPosts();
+  }, [getPosts]);
 
-  useEffect(() => {
-    if (selectedGenre === 'All') {
-      setFilteredPosts(posts);
-    } else {
-      setFilteredPosts(posts.filter(post => post.genre === selectedGenre));
-    }
-  }, [selectedGenre, posts]);
+  const handleDateSelect = (date: string | null) => {
+    setSelectedDate(date);
+  };
 
-  const genres = ['All', '技術', '日常'];
+  const handleGenreSelect = (genre: string) => {
+    setSelectedGenre(genre === selectedGenre ? null : genre); // 同じジャンルを再度クリックしたら選択を解除
+  };
+
+  const genres = ['技術', '日常']; // 'All'はselectedGenreがnullの場合として扱う
 
   return (
     <div className="container">
       <h1>One's Word's (Read-Only)</h1>
-      <div className="genre-filter">
-        {genres.map(genre => (
-          <button
-            key={genre}
-            onClick={() => setSelectedGenre(genre)}
-            className={selectedGenre === genre ? 'active' : ''}
-          >
-            {genre}
-          </button>
-        ))}
-      </div>
-      <div className="post-list">
-        {filteredPosts.length ? filteredPosts.map((post) => (
-          <div key={post.id} className="post-item">
-            <div className="post-text">{post.text}</div>
-                          <div className="post-footer">
-                            <div>❤️ {post.likes}</div>
-                            <div className={`genre-tag ${post.genre === '技術' ? 'genre-tech' : post.genre === '日常' ? 'genre-daily' : 'genre-other'}`}>
-                              {post.genre}
-                            </div>
-                            <div className="timestamp">{post.timestamp}</div>
-                          </div>          </div>
-        )) : <div className="post-item">NO DATA</div>}
+      <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}> {/* レイアウト調整 */}
+        <div style={{ flex: 1, maxWidth: '550px' }}> {/* ジャンルフィルターとリスト */}
+          <div className="genre-filter">
+            <button
+              onClick={() => handleGenreSelect('All')} // 'All'ボタンを追加
+              className={selectedGenre === null ? 'active' : ''}
+            >
+              All
+            </button>
+            {genres.map(genre => (
+              <button
+                key={genre}
+                onClick={() => handleGenreSelect(genre)}
+                className={selectedGenre === genre ? 'active' : ''}
+              >
+                {genre}
+              </button>
+            ))}
+          </div>
+          <div className="post-list">
+            {posts.length ? posts.map((post) => (
+              <div key={post.id} className="post-item">
+                <div className="post-text">{post.text}</div>
+                <div className="post-footer">
+                  <div>❤️ {post.likes}</div>
+                  <div className={`genre-tag ${post.genre === '技術' ? 'genre-tech' : post.genre === '日常' ? 'genre-daily' : 'genre-other'}`}>
+                    {post.genre}
+                  </div>
+                  <div className="timestamp">{post.timestamp}</div>
+                </div>
+              </div>
+            )) : <div className="post-item">NO DATA</div>}
+          </div>
+        </div>
+        <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} /> {/* カレンダーコンポーネントを配置 */}
       </div>
     </div>
   );

@@ -25,7 +25,27 @@ const formatResultSet = (resultSet: ResultSet) => {
 
 app.get('/api/posts', async (req, res) => {
   try {
-    const resultSet = await db.execute(`SELECT id, text, timestamp, likes, genre FROM ${TABLE_DATA} ORDER BY timestamp DESC`);
+    const { date, genre } = req.query;
+    let whereClauses: string[] = [];
+    const params: (string | number)[] = [];
+
+    if (date && typeof date === 'string') {
+      whereClauses.push(`strftime('%Y-%m-%d', timestamp) = ?`);
+      params.push(date);
+    }
+
+    if (genre && typeof genre === 'string') {
+      whereClauses.push(`genre = ?`);
+      params.push(genre);
+    }
+
+    let query = `SELECT id, text, timestamp, likes, genre FROM ${TABLE_DATA}`;
+    if (whereClauses.length > 0) {
+      query += ` WHERE ${whereClauses.join(' AND ')}`;
+    }
+    query += ` ORDER BY timestamp DESC`;
+
+    const resultSet = await db.execute({ sql: query, args: params });
     const posts = formatResultSet(resultSet);
     res.json(posts);
   } catch (error) {

@@ -15,8 +15,8 @@ export interface Post {
   likes: number;
 }
 
-export const getPosts = () => {
-  return apiClient.get<Post[]>('/posts');
+export const getPosts = (selectedDate?: string | null, genre?: string | null) => {
+  return apiClient.get<Post[]>('/posts', { params: { date: selectedDate, genre } });
 };
 
 export const createPost = (post: Omit<Post, 'id'>) => {
