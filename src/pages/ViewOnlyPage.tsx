@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
+import LikeButton from '../components/LikeButton';
 import { type Post } from '../api';
 import { fetchPosts } from '../utils/fetchPosts';
+import { handleUpdateLikes } from '../utils/handleUpdateLikes';
 import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import '../style.css';
 
@@ -25,7 +27,7 @@ function ViewOnlyPage() {
   };
 
   const handleGenreSelect = (genre: string) => {
-    setSelectedGenre(genre === selectedGenre ? null : genre); // 同じジャンルを再度クリックしたら選択を解除
+    setSelectedGenre(genre === 'All' ? null : genre);
   };
 
   const genres = ['技術', '日常']; // 'All'はselectedGenreがnullの場合として扱う
@@ -57,7 +59,13 @@ function ViewOnlyPage() {
               <div key={post.id} className="post-item">
                 <div className="post-text">{post.text}</div>
                 <div className="post-footer">
-                  <div>❤️ {post.likes}</div>
+                  <div className="like-button-wrapper">
+                    <LikeButton
+                      initialLikes={post.likes}
+                      postId={post.id}
+                      onUpdateLikes={(postId, newLikes) => handleUpdateLikes(postId, newLikes, posts, setPosts)}
+                    />
+                  </div>
                   <div className={`genre-tag ${post.genre === '技術' ? 'genre-tech' : post.genre === '日常' ? 'genre-daily' : 'genre-other'}`}>
                     {post.genre}
                   </div>

@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import LikeButton from '../components/LikeButton';
 import { type Post } from '../api';
 import { fetchPosts } from '../utils/fetchPosts';
 import { addPost } from '../utils/addPost';
-import { handleUpdateLikes } from '../utils/handleUpdateLikes';
 import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import '../style.css';
 
@@ -12,11 +10,14 @@ function PostPage() {
   const [newGenre, setNewGenre] = useState('技術');
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null); // 選択された日付のステート
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(null); // 選択されたジャンルのステート
 
   // 投稿をフェッチする関数をuseCallbackでメモ化
   const getPosts = useCallback(async () => {
-    await fetchPosts(setPosts, selectedDate, newGenre);
-  }, [setPosts, selectedDate, newGenre]);
+    // selectedGenreがnullまたは'All'の場合は引数にnullを渡す
+    const genreParam = selectedGenre === 'All' ? null : selectedGenre;
+    await fetchPosts(setPosts, selectedDate, genreParam);
+  }, [setPosts, selectedDate, selectedGenre]);
 
   useEffect(() => {
     getPosts();
@@ -24,6 +25,10 @@ function PostPage() {
 
   const handleDateSelect = (date: string | null) => {
     setSelectedDate(date);
+  };
+
+  const handleGenreSelect = (genre: string) => {
+    setSelectedGenre(genre === 'All' ? null : genre);
   };
 
   const handleAddPost = async () => {
@@ -48,18 +53,29 @@ function PostPage() {
             </select>
             <button onClick={handleAddPost}>Post</button>
           </div>
+          <div className="genre-filter">
+            <button
+              onClick={() => handleGenreSelect('All')}
+              className={selectedGenre === null ? 'active' : ''}
+            >
+              All
+            </button>
+            {['技術', '日常'].map(genre => (
+              <button
+                key={genre}
+                onClick={() => handleGenreSelect(genre)}
+                className={selectedGenre === genre ? 'active' : ''}
+              >
+                {genre}
+              </button>
+            ))}
+          </div>
           <div className="post-list">
             {posts.length ? posts.map((post) => (
               <div key={post.id} className="post-item">
                 <div className="post-text">{post.text}</div>
                 <div className="post-footer">
-                  <div className="like-button-wrapper">
-                    <LikeButton
-                      initialLikes={post.likes}
-                      postId={post.id}
-                      onUpdateLikes={(postId, newLikes) => handleUpdateLikes(postId, newLikes, posts, setPosts)}
-                    />
-                  </div>
+                  <div>❤️ {post.likes}</div>
                   <div className={`genre-tag ${post.genre === '技術' ? 'genre-tech' : post.genre === '日常' ? 'genre-daily' : 'genre-other'}`}>
                     {post.genre}
                   </div>
@@ -76,3 +92,4 @@ function PostPage() {
 }
 
 export default PostPage;
+

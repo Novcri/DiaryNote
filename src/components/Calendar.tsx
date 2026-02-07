@@ -100,7 +100,10 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect, initialSelectedDate =
           );
         })}
       </div>
-      <button className="clear-date-button" onClick={() => handleDateClick(parseYYYYMMDDToDate(todayStr))}>
+      <button className="clear-date-button" onClick={() => {
+        setSelectedDate(null);
+        onDateSelect(null);
+      }}>
         日付選択をクリア
       </button>
     </div>
