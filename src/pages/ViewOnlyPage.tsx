@@ -1,34 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
 import LikeButton from '../components/LikeButton';
-import { type Post } from '../api';
-import { fetchPosts } from '../utils/fetchPosts';
 import { handleUpdateLikes } from '../utils/handleUpdateLikes';
 import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import '../style.css';
+import { usePostFiltering } from '../hooks/usePostFiltering'; // usePostFilteringをインポート
 
 function ViewOnlyPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null); // 'All'ではなくnullで初期化
-  const [selectedDate, setSelectedDate] = useState<string | null>(null); // 選択された日付のステート
-
-  // 投稿をフェッチする関数をuseCallbackでメモ化
-  const getPosts = useCallback(async () => {
-    // selectedGenreがnullまたは'All'の場合は引数にnullを渡す
-    const genreParam = selectedGenre === 'All' ? null : selectedGenre;
-    await fetchPosts(setPosts, selectedDate, genreParam);
-  }, [setPosts, selectedDate, selectedGenre]);
-
-  useEffect(() => {
-    getPosts();
-  }, [getPosts]);
-
-  const handleDateSelect = (date: string | null) => {
-    setSelectedDate(date);
-  };
-
-  const handleGenreSelect = (genre: string) => {
-    setSelectedGenre(genre === 'All' ? null : genre);
-  };
+  const { posts, setPosts, selectedDate, selectedGenre, handleDateSelect, handleGenreSelect } = usePostFiltering();
 
   const genres = ['技術', '日常']; // 'All'はselectedGenreがnullの場合として扱う
 

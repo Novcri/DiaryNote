@@ -1,28 +1,23 @@
-import { createPost, type Post } from '../api';
+import { createPost } from '../api';
 import { getFormattedTimestamp } from './date';
-import type { Dispatch, SetStateAction } from 'react';
 
 export const addPost = async (
     newPost: string,
     newGenre: string,
-    setNewPost: Dispatch<SetStateAction<string>>,
-    setNewGenre: Dispatch<SetStateAction<string>>,
-    posts: Post[],
-    setPosts: Dispatch<SetStateAction<Post[]>>
 ) => {
-    if (newPost.trim() !== '') {
-        try {
-            const response = await createPost({
-                text: newPost,
-                genre: newGenre,
-                timestamp: getFormattedTimestamp(),
-                likes: 0,
-            });
-            setPosts([response.data, ...posts]);
-            setNewPost('');
-            setNewGenre('');
-        } catch (error) {
-            console.error(error);
-        }
+    if (newPost.trim() === '') {
+      return; // 空の投稿は処理しない
+    }
+    try {
+        const response = await createPost({
+            text: newPost,
+            genre: newGenre,
+            timestamp: getFormattedTimestamp(),
+            likes: 0,
+        });
+        return response.data; // 新しく追加された投稿データを返す
+    } catch (error) {
+        console.error(error);
+        throw error; // エラーを再スローして呼び出し元で処理できるようにする
     }
 };

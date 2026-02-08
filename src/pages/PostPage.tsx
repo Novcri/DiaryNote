@@ -1,40 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
-import { type Post } from '../api';
-import { fetchPosts } from '../utils/fetchPosts';
-import { addPost } from '../utils/addPost';
 import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import '../style.css';
+import { usePostManagement } from '../hooks/usePostManagement';
 
 function PostPage() {
-  const [newPost, setNewPost] = useState('');
-  const [newGenre, setNewGenre] = useState('技術');
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null); // 選択された日付のステート
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null); // 選択されたジャンルのステート
-
-  // 投稿をフェッチする関数をuseCallbackでメモ化
-  const getPosts = useCallback(async () => {
-    // selectedGenreがnullまたは'All'の場合は引数にnullを渡す
-    const genreParam = selectedGenre === 'All' ? null : selectedGenre;
-    await fetchPosts(setPosts, selectedDate, genreParam);
-  }, [setPosts, selectedDate, selectedGenre]);
-
-  useEffect(() => {
-    getPosts();
-  }, [getPosts]);
-
-  const handleDateSelect = (date: string | null) => {
-    setSelectedDate(date);
-  };
-
-  const handleGenreSelect = (genre: string) => {
-    setSelectedGenre(genre === 'All' ? null : genre);
-  };
-
-  const handleAddPost = async () => {
-    await addPost(newPost, newGenre, setNewPost, setNewGenre, posts, setPosts);
-    getPosts(); // 投稿追加後にリストを更新
-  };
+  const {
+    newPost,
+    setNewPost,
+    newGenre,
+    setNewGenre,
+    posts,
+    selectedDate,
+    selectedGenre,
+    handleDateSelect,
+    handleGenreSelect,
+    handleAddPost,
+  } = usePostManagement();
 
   return (
     <div className="container">
