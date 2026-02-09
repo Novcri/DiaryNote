@@ -26,7 +26,7 @@ const formatResultSet = (resultSet: ResultSet) => {
 app.get('/api/posts', async (req, res) => {
   try {
     const { date, genre } = req.query;
-    let whereClauses: string[] = [];
+    const whereClauses: string[] = [];
     const params: (string | number)[] = [];
 
     if (date && typeof date === 'string') {

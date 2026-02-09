@@ -41,6 +41,14 @@ nav a:hover {
   color: #1a73e8; /* Google blue on hover */
 }
 
+nav a.disabled-link {
+  pointer-events: none; /* クリックイベントを無効化 */
+  opacity: 0.6; /* 薄く表示して非活性を表現 */
+  cursor: default; /* デフォルトカーソル */
+  background-color: transparent; /* ホバー時の背景色を無効化 */
+  color: #5f6368; /* ホバー時の色を無効化 */
+}
+
 .post-form {
   display: flex;
   flex-wrap: wrap; /* Add this */

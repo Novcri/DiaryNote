@@ -1,15 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchAndSetPosts } from '../utils/postManagement'; // fetchAndSetPostsを再利用
-import { type Post } from '../api'; // Post型をapiからインポート
+import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
+import { fetchAndSetPosts } from '../utils/postManagement';
+import { type Post } from '../api';
 
 export const usePostFiltering = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+  const navigate = useNavigate(); // useNavigateを初期化
 
   const refreshPosts = useCallback(async () => {
-    await fetchAndSetPosts(setPosts, selectedDate, selectedGenre);
-  }, [setPosts, selectedDate, selectedGenre]);
+    try {
+      await fetchAndSetPosts(setPosts, selectedDate, selectedGenre);
+    } catch (error) {
+      console.error("Failed to refresh posts, navigating to error page:", error);
+      navigate('/error'); // エラーページにリダイレクト
+    }
+  }, [setPosts, selectedDate, selectedGenre, navigate]);
 
   useEffect(() => {
     refreshPosts();

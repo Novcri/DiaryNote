@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { formatDateToYYYYMMDD, parseYYYYMMDDToDate } from '../utils/date';
+import { formatDateToYYYYMMDD } from '../utils/date';
 
 interface CalendarProps {
   onDateSelect: (date: string | null) => void;

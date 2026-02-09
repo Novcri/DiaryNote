@@ -6,6 +6,7 @@ export const fetchPosts = async (setPosts: Dispatch<SetStateAction<Post[]>>, sel
     const response = await getPosts(selectedDate, genre);
     setPosts(response.data);
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch posts:", error);
+    throw error; // エラーを再スローする
   }
 };

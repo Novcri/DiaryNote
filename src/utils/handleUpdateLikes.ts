@@ -12,7 +12,6 @@ export const handleUpdateLikes = async (
         setPosts(posts.map(p => (p.id === postId ? { ...p, likes: newLikes } : p)));
     } catch (error) {
         console.error('Failed to update likes:', error);
-        // Optionally revert the state change on failure
-        setPosts(posts.map(p => p)); // This forces a re-render but doesn't change data
+        throw error; // エラーを再スローする
     }
 };

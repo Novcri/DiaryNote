@@ -1,31 +1,34 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import PostPage from './pages/PostPage';
 import ViewOnlyPage from './pages/ViewOnlyPage';
+import ErrorPage from './pages/ErrorPage';
 import './style.css';
 
 function App() {
+  const location = useLocation();
+  const isErrorPage = location.pathname === '/error';
+
   return (
-    <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home (Post)</Link>
-            </li>
-            <li>
-              <Link to="/view">View-Only</Link>
-            </li>
-          </ul>
-        </nav>
+    <div>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/" className={isErrorPage ? 'disabled-link' : ''}>Home (Post)</Link>
+          </li>
+          <li>
+            <Link to="/view" className={isErrorPage ? 'disabled-link' : ''}>View-Only</Link>
+          </li>
+        </ul>
+      </nav>
 
 
 
-        <Routes>
-          <Route path="/" element={<PostPage />} />
-          <Route path="/view" element={<ViewOnlyPage />} />
-        </Routes>
-      </div>
-    </Router>
+      <Routes>
+        <Route path="/" element={<PostPage />} />
+        <Route path="/view" element={<ViewOnlyPage />} />
+        <Route path="/error" element={<ErrorPage />} />
+      </Routes>
+    </div>
   );
 }
 
