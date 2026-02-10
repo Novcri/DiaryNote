@@ -1,6 +1,7 @@
-import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import '../style.css';
+import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import { usePostManagement } from '../hooks/usePostManagement';
+import { usePostFilter } from '../hooks/usePostFilter'; // usePostFilterをインポート
 
 function PostPage() {
   const {
@@ -9,18 +10,18 @@ function PostPage() {
     newGenre,
     setNewGenre,
     posts,
-    selectedDate,
     selectedGenre,
-    handleDateSelect,
     handleGenreSelect,
     handleAddPost,
   } = usePostManagement();
 
+  const { selectedDate, handleDateSelect } = usePostFilter(); // selectedDateとhandleDateSelectを取得
+
   return (
     <div className="container">
       <h1>DiaryNote</h1>
-      <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}> {/* レイアウト調整 */}
-        <div style={{ flex: 1, maxWidth: '550px' }}> {/* 投稿フォームとリスト */}
+      <div className="post-page-layout">
+        <div className="post-column">
           <div className="post-form">
             <textarea
               value={newPost}
@@ -65,11 +66,12 @@ function PostPage() {
             )) : <div className="post-item">NO DATA</div>}
           </div>
         </div>
-        <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} /> {/* カレンダーコンポーネントを配置 */}
+        <div className="calendar-column">
+            <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} />
+        </div>
       </div>
     </div>
   );
 }
 
 export default PostPage;
-

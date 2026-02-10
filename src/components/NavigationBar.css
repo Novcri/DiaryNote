@@ -5,6 +5,8 @@
   background-color: #333;
   color: white;
   padding: 15px 0;
+  position: relative; /* カレンダーポップアップの配置のために必要 */
+  z-index: 1000; /* 他の要素の上に表示 */
 }
 
 .navbar-brand a {
@@ -12,7 +14,12 @@
   text-decoration: none;
   font-size: 1.5em;
   font-weight: bold;
-  padding-left: 20px; /* 左側にパディングを追加 */
+  padding-left: 20px;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
 }
 
 .navbar-links a {
@@ -21,7 +28,6 @@
   margin-left: 20px;
   font-size: 1.1em;
 }
-
 
 .navbar-auth span {
   margin-right: 10px;
@@ -38,9 +44,67 @@
 }
 
 .navbar-auth {
-  padding-right: 20px; /* 右側にパディングを追加 */
+  padding-right: 20px;
 }
 
 .navbar-auth button:hover {
   background-color: #4cae4c;
+}
+
+.calendar-icon-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+  margin-left: 20px;
+  display: none; /* デフォルトでは非表示 */
+}
+
+/* カレンダーポップアップのスタイル */
+.calendar-popup {
+  display: none; /* デフォルトでは非表示 */
+  position: fixed; /* 画面全体を覆うように配置 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明の背景 */
+  justify-content: center;
+  align-items: center;
+  z-index: 1001; /* ナビゲーションバーより手前に表示 */
+}
+
+.calendar-popup .calendar {
+  width: 90%; /* モバイルでの幅 */
+  max-width: 350px; /* 最大幅を設定 */
+  position: relative; /* 内部コンテンツの配置のため */
+}
+
+.calendar-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: white;
+  cursor: pointer;
+  z-index: 1002; /* カレンダーより手前に表示 */
+}
+
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .navbar-links a {
+    display: none; /* 小さい画面では通常のリンクを非表示 */
+  }
+
+  .calendar-icon-button {
+    display: block; /* 小さい画面でカレンダーアイコンを表示 */
+  }
+
+  .calendar-popup {
+    display: flex; /* 小さい画面でカレンダーポップアップを表示 */
+  }
 }

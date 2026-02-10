@@ -2,18 +2,20 @@ import LikeButton from '../components/LikeButton';
 import { handleUpdateLikes } from '../utils/handleUpdateLikes';
 import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import '../style.css';
-import { usePostFiltering } from '../hooks/usePostFiltering'; // usePostFilteringをインポート
+import { usePostFiltering } from '../hooks/usePostFiltering';
+import { usePostFilter } from '../hooks/usePostFilter'; // usePostFilterをインポート
 
 function ViewOnlyPage() {
-  const { posts, setPosts, selectedDate, selectedGenre, handleDateSelect, handleGenreSelect } = usePostFiltering();
+  const { posts, setPosts, selectedGenre, handleGenreSelect } = usePostFiltering();
+  const { selectedDate, handleDateSelect } = usePostFilter(); // selectedDateとhandleDateSelectを取得
 
   const genres = ['技術', '日常']; // 'All'はselectedGenreがnullの場合として扱う
 
   return (
     <div className="container">
       <h1>DiaryNote</h1>
-      <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}> {/* レイアウト調整 */}
-        <div style={{ flex: 1, maxWidth: '550px' }}> {/* ジャンルフィルターとリスト */}
+      <div className="view-only-page-layout">
+        <div className="post-column">
           <div className="genre-filter">
             <button
               onClick={() => handleGenreSelect('All')} // 'All'ボタンを追加
@@ -52,7 +54,9 @@ function ViewOnlyPage() {
             )) : <div className="post-item">NO DATA</div>}
           </div>
         </div>
-        <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} /> {/* カレンダーコンポーネントを配置 */}
+        <div className="calendar-column">
+            <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} />
+        </div>
       </div>
     </div>
   );
