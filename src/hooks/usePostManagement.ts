@@ -1,18 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
+import { useNavigate } from 'react-router-dom';
 import { handlePostSubmission } from '../utils/postManagement';
 import { usePostFiltering } from './usePostFiltering';
 
 export const usePostManagement = () => {
   const [newPost, setNewPost] = useState('');
   const [newGenre, setNewGenre] = useState('技術');
-  const navigate = useNavigate(); // useNavigateを初期化
+  const navigate = useNavigate();
 
   const {
     posts,
     setPosts,
     selectedDate,
-    setSelectedDate,
     selectedGenre,
     setSelectedGenre,
     handleDateSelect,
@@ -25,7 +24,7 @@ export const usePostManagement = () => {
       await handlePostSubmission(newPost, newGenre, setNewPost, setNewGenre, refreshPosts);
     } catch (error) {
       console.error("Failed to add post, navigating to error page:", error);
-      navigate('/error'); // エラーページにリダイレクト
+      navigate('/error');
     }
   };
 
@@ -37,7 +36,6 @@ export const usePostManagement = () => {
     posts,
     setPosts,
     selectedDate,
-    setSelectedDate,
     selectedGenre,
     setSelectedGenre,
     handleDateSelect,

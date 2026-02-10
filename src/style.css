@@ -216,7 +216,7 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: #f66;
   border-bottom: 1px solid #eee;
 }
 
@@ -259,6 +259,7 @@ button {
   border-radius: 4px;
   transition: background-color 0.2s ease;
   font-size: 0.9em;
+  color: #333;
 }
 
 .calendar-day:hover {
@@ -317,4 +318,41 @@ button {
 .logout-button:hover {
   background-color: #f0f0f0; /* Light gray background on hover */
   color: #dc3545; /* Red color on hover for logout */
+}
+
+/* Page Layouts */
+.post-page-layout,
+.view-only-page-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 20px; /* Adjust as needed */
+}
+
+.post-column {
+  flex: 1;
+  max-width: 550px; /* Wider column for content */
+}
+
+.calendar-column {
+    display: block; /* デフォルトで表示 */
+    flex-shrink: 0; /* 縮小しない */
+    width: 320px; /* カレンダーの幅を固定 */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .post-page-layout,
+  .view-only-page-layout {
+    flex-direction: column; /* Stack columns vertically on small screens */
+    gap: 0; /* Remove gap when stacked */
+  }
+
+  .post-column {
+    max-width: 100%; /* Full width on small screens */
+  }
+
+  .calendar-column {
+      display: none; /* モバイルでは非表示 */
+  }
 }
