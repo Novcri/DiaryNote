@@ -11,7 +11,7 @@ function ViewOnlyPage() {
 
   return (
     <div className="container">
-      <h1>One's Word's (Read-Only)</h1>
+      <h1>DiaryNote</h1>
       <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}> {/* レイアウト調整 */}
         <div style={{ flex: 1, maxWidth: '550px' }}> {/* ジャンルフィルターとリスト */}
           <div className="genre-filter">

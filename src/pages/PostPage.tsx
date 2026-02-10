@@ -18,7 +18,7 @@ function PostPage() {
 
   return (
     <div className="container">
-      <h1>One's Word's</h1>
+      <h1>DiaryNote</h1>
       <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}> {/* レイアウト調整 */}
         <div style={{ flex: 1, maxWidth: '550px' }}> {/* 投稿フォームとリスト */}
           <div className="post-form">

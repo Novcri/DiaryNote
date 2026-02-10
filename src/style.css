@@ -1,3 +1,9 @@
+body {
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -83,7 +89,6 @@ button {
   color: white;
   cursor: pointer;
   margin-left: 0; /* Remove default margin-left */
-  margin-bottom: 10px; /* For wrapping */
 }
 
 .post-list {
@@ -294,4 +299,22 @@ button {
 
 .clear-date-button:hover {
   background-color: #c82333;
+}
+
+.logout-button {
+  text-decoration: none;
+  color: #5f6368; /* Google-like gray */
+  font-weight: 500; /* Slightly bolder */
+  padding: 8px 15px;
+  border-radius: 20px; /* More rounded */
+  transition: all 0.3s ease; /* Smooth transition for hover */
+  font-size: 1.1em;
+  background-color: transparent; /* ボタンのデフォルト背景を透明に */
+  border: none; /* ボタンのデフォルトボーダーを削除 */
+  cursor: pointer; /* カーソルをポインターに */
+}
+
+.logout-button:hover {
+  background-color: #f0f0f0; /* Light gray background on hover */
+  color: #dc3545; /* Red color on hover for logout */
 }

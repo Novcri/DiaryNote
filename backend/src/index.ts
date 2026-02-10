@@ -10,6 +10,30 @@ const TABLE_DATA = process.env.TABLE_DATA;
 app.use(cors());
 app.use(express.json());
 
+// 仮のユーザーデータ (実際にはDBから取得します)
+const users: { email: string | undefined; password: string | undefined; name: string | undefined }[] = [
+  { email: process.env.EMAIL, password: process.env.PASSWORD, name: process.env.NAME }
+];
+
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
+
+  const user = users.find(u => u.email === email && u.password === password);
+
+  if (user) {
+    // 認証成功
+    // 実際にはJWTトークンなどを返しますが、今回はシンプルに成功メッセージとユーザー情報を返します
+    res.status(200).json({ message: 'Login successful', user: { email: user.email, name: user.name } });
+  } else {
+    // 認証失敗
+    res.status(401).json({ message: 'Invalid credentials' });
+  }
+});
+
 const formatResultSet = (resultSet: ResultSet) => {
   if (!resultSet.rows) {
     return [];

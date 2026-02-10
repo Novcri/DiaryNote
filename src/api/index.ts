@@ -1,11 +1,21 @@
 import axios from 'axios';
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
   baseURL: 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+export interface User {
+  email: string;
+  name: string;
+}
+
+export const login = async (email: string, password: string) => {
+  const response = await apiClient.post<{ message: string; user: User }>('/login', { email, password });
+  return response.data;
+};
 
 export interface Post {
   id: number;
