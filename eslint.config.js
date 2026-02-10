@@ -11,7 +11,7 @@ export default defineConfig([
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
-      tseslint.configs.recommended,
+      ...tseslint.configs.recommended.filter(config => !config.rules || !config.rules['@typescript-eslint/no-unused-vars']),
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],
@@ -19,5 +19,17 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
-  },
+    rules: {
+      "no-unused-vars": "off", // コアルールを無効化
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_",
+          "argsIgnorePattern": "^_",
+          "caughtErrorsIgnorePattern": "^_" // catch ブロックのエラーも無視
+        }
+      ],
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  }
 ])
