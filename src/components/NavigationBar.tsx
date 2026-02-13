@@ -1,19 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { usePostFilter } from '../hooks/usePostFilter';
 import AuthNavControls from './AuthNavControls';
-import Calendar from './Calendar'; // Calendarをインポート
+import Calendar from './Calendar';
 import './NavigationBar.css';
 
 const NavigationBar: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const { selectedDate, handleDateSelect } = usePostFilter();
   const [showCalendar, setShowCalendar] = useState(false);
+  const calendarPopupRef = useRef<HTMLDivElement>(null); // calendarPopupRef に名前を変更
 
   const toggleCalendar = () => {
     setShowCalendar(prev => !prev);
   };
+
+  // ポップアップの背景部分がクリックされたときに閉じるハンドラ
+  const handlePopupClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    // クリックされた要素がcalendarPopupRef自身である場合（背景部分がクリックされた場合）
+    if (calendarPopupRef.current && event.target === calendarPopupRef.current) {
+      setShowCalendar(false);
+    }
+  };
+
+  // mousedown イベントリスナーは不要になったため削除
 
   return (
     <nav className="navbar">
@@ -29,9 +40,12 @@ const NavigationBar: React.FC = () => {
       </div>
       <AuthNavControls />
       {showCalendar && (
-        <div className="calendar-popup">
+        <div className="calendar-popup" ref={calendarPopupRef} onClick={handlePopupClick}> {/* onClick を追加 */}
           <button className="calendar-close-button" onClick={() => setShowCalendar(false)}>✖</button>
-          <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} />
+          {/* カレンダー本体へのクリックイベント伝播を停止 */}
+          <div onClick={e => e.stopPropagation()}> 
+            <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} />
+          </div>
         </div>
       )}
     </nav>

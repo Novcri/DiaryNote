@@ -202,7 +202,9 @@ button {
 
 /* Calendar styles */
 .calendar {
-  width: 300px;
+  width: 300px; /* 基本幅 */
+  max-width: 100%; /* 親要素の幅に合わせて最大幅を調整 */
+  margin: 0 auto; /* 中央揃え */
   border: 1px solid #ccc;
   border-radius: 8px;
   font-family: Arial, sans-serif;
@@ -300,6 +302,23 @@ button {
 
 .clear-date-button:hover {
   background-color: #c82333;
+}
+
+/* モバイル表示時のカレンダースタイル調整 */
+@media (max-width: 768px) {
+  .calendar-day,
+  .calendar-day-header {
+    padding: 6px 0;
+    font-size: 0.8em;
+  }
+
+  .calendar-header h2 {
+    font-size: 1em;
+  }
+
+  .calendar-header button {
+    font-size: 1em;
+  }
 }
 
 .logout-button {

@@ -76,7 +76,6 @@
 }
 
 .calendar-popup .calendar {
-  width: 90%; /* モバイルでの幅 */
   max-width: 350px; /* 最大幅を設定 */
   position: relative; /* 内部コンテンツの配置のため */
 }
