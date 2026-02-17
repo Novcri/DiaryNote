@@ -287,6 +287,11 @@ button {
   background-color: transparent;
 }
 
+.calendar-day.highlighted-date {
+  background-color: #d4edda !important; /* Light green for highlighted dates */
+  border: 1px solid #28a745;
+}
+
 .clear-date-button {
   display: block;
   width: calc(100% - 20px);

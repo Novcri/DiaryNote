@@ -6,7 +6,7 @@ import { usePostFiltering } from '../hooks/usePostFiltering';
 import { usePostFilter } from '../hooks/usePostFilter'; // usePostFilterをインポート
 
 function ViewOnlyPage() {
-  const { posts, setPosts, selectedGenre, handleGenreSelect } = usePostFiltering();
+  const { posts, setPosts, selectedGenre, handleGenreSelect, highlightedDates } = usePostFiltering(); // highlightedDates を取得
   const { selectedDate, handleDateSelect } = usePostFilter(); // selectedDateとhandleDateSelectを取得
 
   const genres = ['技術', '日常']; // 'All'はselectedGenreがnullの場合として扱う
@@ -55,7 +55,11 @@ function ViewOnlyPage() {
           </div>
         </div>
         <div className="calendar-column">
-            <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} />
+            <Calendar
+              onDateSelect={handleDateSelect}
+              initialSelectedDate={selectedDate}
+              highlightedDates={highlightedDates} // highlightedDates を Calendar コンポーネントに渡す
+            />
         </div>
       </div>
     </div>

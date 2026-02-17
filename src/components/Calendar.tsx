@@ -4,9 +4,10 @@ import { formatDateToYYYYMMDD } from '../utils/date';
 interface CalendarProps {
   onDateSelect: (date: string | null) => void;
   initialSelectedDate?: string | null;
+  highlightedDates?: string[]; // Add this prop
 }
 
-const Calendar: React.FC<CalendarProps> = ({ onDateSelect, initialSelectedDate = null }) => {
+const Calendar: React.FC<CalendarProps> = ({ onDateSelect, initialSelectedDate = null, highlightedDates = [] }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(initialSelectedDate);
 
@@ -88,11 +89,25 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect, initialSelectedDate =
           const isSelected = selectedDate === dateStr;
           const isToday = todayStr === dateStr;
           const isCurrentMonth = isSameMonth(date, currentMonth);
+          const isHighlighted = highlightedDates.includes(dateStr); // Check if date is in highlightedDates
+
+          // スタイルを適用する優先順位: selected > highlighted
+          let cellStyle = {};
+          if (isSelected) {
+            cellStyle = { backgroundColor: '#007bff', color: 'white', fontWeight: 'bold' };
+          } else if (isHighlighted) {
+            cellStyle = { backgroundColor: '#d4edda', border: '1px solid #28a745' };
+          }
+          // 今日を示すボーダーはisSelectedやisHighlightedと共存できる
+          if (isToday && !isSelected) { // 選択されていない今日の日付にのみボーダーを適用
+            cellStyle = { ...cellStyle, border: '2px solid #007bff' };
+          }
 
           return (
             <div
               key={index}
               className={`calendar-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${!isCurrentMonth ? 'outside-month' : ''}`}
+              style={cellStyle}
               onClick={() => handleDateClick(date)}
             >
               {date.getDate()}

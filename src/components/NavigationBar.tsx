@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { usePostFilter } from '../hooks/usePostFilter';
+import { usePostFiltering } from '../hooks/usePostFiltering'; // usePostFilteringをインポート
 import AuthNavControls from './AuthNavControls';
 import Calendar from './Calendar';
 import './NavigationBar.css';
@@ -9,6 +10,7 @@ import './NavigationBar.css';
 const NavigationBar: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const { selectedDate, handleDateSelect } = usePostFilter();
+  const { highlightedDates } = usePostFiltering(); // highlightedDates を取得
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarPopupRef = useRef<HTMLDivElement>(null); // calendarPopupRef に名前を変更
 
@@ -44,7 +46,7 @@ const NavigationBar: React.FC = () => {
           <button className="calendar-close-button" onClick={() => setShowCalendar(false)}>✖</button>
           {/* カレンダー本体へのクリックイベント伝播を停止 */}
           <div onClick={e => e.stopPropagation()}> 
-            <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} />
+            <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} highlightedDates={highlightedDates} /> {/* highlightedDates を渡す */}
           </div>
         </div>
       )}

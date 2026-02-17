@@ -13,6 +13,7 @@ function PostPage() {
     selectedGenre,
     handleGenreSelect,
     handleAddPost,
+    highlightedDates, // Destructure highlightedDates
   } = usePostManagement();
 
   const { selectedDate, handleDateSelect } = usePostFilter(); // selectedDateとhandleDateSelectを取得
@@ -67,7 +68,11 @@ function PostPage() {
           </div>
         </div>
         <div className="calendar-column">
-            <Calendar onDateSelect={handleDateSelect} initialSelectedDate={selectedDate} />
+            <Calendar
+              onDateSelect={handleDateSelect}
+              initialSelectedDate={selectedDate}
+              highlightedDates={highlightedDates} // Pass highlightedDates to Calendar
+            />
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ export const usePostManagement = () => {
     handleDateSelect,
     handleGenreSelect,
     refreshPosts,
+    highlightedDates, // Add highlightedDates here
   } = usePostFiltering();
 
   const handleAddPost = async () => {
@@ -42,5 +43,6 @@ export const usePostManagement = () => {
     handleGenreSelect,
     handleAddPost,
     refreshPosts,
+    highlightedDates, // And return it here
   };
 };
