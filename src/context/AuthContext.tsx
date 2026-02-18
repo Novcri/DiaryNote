@@ -1,30 +1,42 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { login as apiLogin, type User } from '../api'; // apiLoginとしてインポート
+import { login as apiLogin, setAuthToken, type User } from '../api';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>; // Promiseを返すように変更
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  user: User | null; // ログインユーザー情報を追加
+  user: User | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null); // ユーザー情報を保持
+  const [user, setUser] = useState<User | null>(null);
+
+  // 初期化時にlocalStorageからトークンを復元
+  useEffect(() => {
+    const savedToken = localStorage.getItem('auth_token');
+    const savedUser = localStorage.getItem('auth_user');
+    if (savedToken && savedUser) {
+      setAuthToken(savedToken);
+      setIsAuthenticated(true);
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await apiLogin(email, password); // APIのlogin関数を呼び出す
-      if (response.message === 'Login successful' && response.user) {
+      const response = await apiLogin(email, password);
+      if (response.token && response.user) {
+        localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('auth_user', JSON.stringify(response.user));
+        setAuthToken(response.token);
         setIsAuthenticated(true);
         setUser(response.user);
         return true;
       }
-      setIsAuthenticated(false);
-      setUser(null);
       return false;
     } catch (error) {
       console.error('Login failed:', error);
@@ -35,6 +47,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+    setAuthToken(null);
     setIsAuthenticated(false);
     setUser(null);
   };

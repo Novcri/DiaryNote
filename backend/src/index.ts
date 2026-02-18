@@ -2,13 +2,33 @@ import express from 'express';
 import cors from 'cors';
 import { db } from './connectDb';
 import { ResultSet } from '@libsql/client';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 const port = process.env.PORT || 3001;
 const TABLE_DATA = process.env.TABLE_DATA;
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'; // 実際には環境変数から取得してください
 
 app.use(cors());
 app.use(express.json());
+
+// JWT認証ミドルウェア
+const authenticateToken = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Authentication token required' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+    (req as any).user = user;
+    next();
+  });
+};
 
 // 仮のユーザーデータ (実際にはDBから取得します)
 const users: { email: string | undefined; password: string | undefined; name: string | undefined }[] = [
@@ -25,9 +45,13 @@ app.post('/api/login', async (req, res) => {
   const user = users.find(u => u.email === email && u.password === password);
 
   if (user) {
-    // 認証成功
-    // 実際にはJWTトークンなどを返しますが、今回はシンプルに成功メッセージとユーザー情報を返します
-    res.status(200).json({ message: 'Login successful', user: { email: user.email, name: user.name } });
+    // 認証成功: JWTトークンを発行
+    const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '24h' });
+    res.status(200).json({ 
+      message: 'Login successful', 
+      user: { email: user.email, name: user.name },
+      token: token 
+    });
   } else {
     // 認証失敗
     res.status(401).json({ message: 'Invalid credentials' });
@@ -78,7 +102,7 @@ app.get('/api/posts', async (req, res) => {
   }
 });
 
-app.post('/api/posts', async (req, res) => {
+app.post('/api/posts', authenticateToken, async (req, res) => {
   try {
     const { text, timestamp, genre } = req.body;
     if (!text || !timestamp) {
@@ -102,7 +126,7 @@ app.post('/api/posts', async (req, res) => {
   }
 });
 
-app.patch('/api/posts/:id', async (req, res) => {
+app.patch('/api/posts/:id', authenticateToken, async (req, res) => {
   try {
     const postId = parseInt(req.params.id, 10);
     const { likes } = req.body;

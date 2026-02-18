@@ -7,13 +7,28 @@ export const apiClient = axios.create({
   },
 });
 
+// トークンをヘッダーに設定するユーティリティ
+export const setAuthToken = (token: string | null) => {
+  if (token) {
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete apiClient.defaults.headers.common['Authorization'];
+  }
+};
+
 export interface User {
   email: string;
   name: string;
 }
 
+export interface LoginResponse {
+  message: string;
+  user: User;
+  token: string;
+}
+
 export const login = async (email: string, password: string) => {
-  const response = await apiClient.post<{ message: string; user: User }>('/login', { email, password });
+  const response = await apiClient.post<LoginResponse>('/login', { email, password });
   return response.data;
 };
 
