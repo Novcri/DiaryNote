@@ -126,7 +126,7 @@ app.post('/api/posts', authenticateToken, async (req, res) => {
   }
 });
 
-app.patch('/api/posts/:id', authenticateToken, async (req, res) => {
+app.patch('/api/posts/:id', async (req, res) => {
   try {
     const postId = parseInt(req.params.id, 10);
     const { likes } = req.body;

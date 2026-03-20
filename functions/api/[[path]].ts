@@ -1,4 +1,5 @@
 import { type Client, type ResultSet, createClient } from '@libsql/client';
+import jwt from '@tsndr/cloudflare-worker-jwt';
 
 interface Env {
   TURSO_URL: string;
@@ -7,6 +8,7 @@ interface Env {
   PASSWORD: string;
   NAME: string;
   TABLE_DATA: string;
+  JWT_SECRET: string;
 }
 
 export async function onRequest(context: EventContext<Env, string, { [key: string]: string | string[] }>) {
@@ -39,17 +41,34 @@ export async function onRequest(context: EventContext<Env, string, { [key: strin
     });
   }
 
-  // 簡易的な認証・CSRFチェック (POST/PATCHの場合、ただし /login は除く)
-  if ((request.method === 'POST' || request.method === 'PATCH') && path !== '/login') {
+  // JWT認証・CSRFチェック (POSTの場合、ただし /login は除く)
+  if (request.method === 'POST' && path !== '/login') {
     const authHeader = request.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
       return new Response(JSON.stringify({ message: 'Authentication token required' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    // 注: 本来はここでトークンの検証（JWTなど）を行うべきですが、
-    // カスタムヘッダーの存在確認だけでもCSRF対策としては有効です。
+
+    const jwtSecret = env.JWT_SECRET || 'your-secret-key';
+    
+    try {
+      const isValid = await jwt.verify(token, jwtSecret);
+      if (!isValid) {
+        return new Response(JSON.stringify({ message: 'Invalid or expired token' }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    } catch (_error: any) {
+      return new Response(JSON.stringify({ message: 'Invalid or expired token' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
   }
 
   // JSONリクエストボディのパース
@@ -127,12 +146,16 @@ async function handleLogin(requestBody: any, corsHeaders: HeadersInit, env: Env)
   const envName = env.NAME;
 
   if (email === envEmail && password === envPassword) {
-    // フロントエンドがトークンを期待しているため、一時的なトークンを返します
-    const dummyToken = 'cf-pages-session-token';
+    const jwtSecret = env.JWT_SECRET || 'your-secret-key';
+    
+    // 認証成功: JWTトークンを発行
+    const exp = Math.floor(Date.now() / 1000) + (24 * 60 * 60); // 24時間後
+    const token = await jwt.sign({ email: envEmail, name: envName, exp }, jwtSecret);
+    
     return new Response(JSON.stringify({ 
       message: 'Login successful', 
       user: { email: envEmail, name: envName },
-      token: dummyToken 
+      token: token 
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

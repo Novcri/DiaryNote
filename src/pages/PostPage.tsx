@@ -2,6 +2,8 @@ import '../style.css';
 import Calendar from '../components/Calendar'; // Calendarコンポーネントをインポート
 import { usePostManagement } from '../hooks/usePostManagement';
 import { usePostFilter } from '../hooks/usePostFilter'; // usePostFilterをインポート
+import LikeButton from '../components/LikeButton';
+import { handleUpdateLikes } from '../utils/handleUpdateLikes';
 
 function PostPage() {
   const {
@@ -10,6 +12,7 @@ function PostPage() {
     newGenre,
     setNewGenre,
     posts,
+    setPosts,
     selectedGenre,
     handleGenreSelect,
     handleAddPost,
@@ -57,7 +60,13 @@ function PostPage() {
               <div key={post.id} className="post-item">
                 <div className="post-text">{post.text}</div>
                 <div className="post-footer">
-                  <div>❤️ {post.likes}</div>
+                  <div className="like-button-wrapper">
+                    <LikeButton
+                      initialLikes={post.likes}
+                      postId={post.id}
+                      onUpdateLikes={(postId, newLikes) => handleUpdateLikes(postId, newLikes, posts, setPosts)}
+                    />
+                  </div>
                   <div className={`genre-tag ${post.genre === '技術' ? 'genre-tech' : post.genre === '日常' ? 'genre-daily' : 'genre-other'}`}>
                     {post.genre}
                   </div>
