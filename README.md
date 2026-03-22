@@ -1,6 +1,7 @@
 # DiaryNote
 
-これはシンプルな日記・ノートアプリです。
+シンプルな日記・ノートアプリです。
+https://diary-note.pages.dev
 
 ## 概要
 
